@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const { merge } = require('webpack-merge');
 
@@ -29,6 +31,11 @@ const baseConfig = {
       filename: 'index.html',
     }),
     new ESLintPlugin({ extensions: 'ts' }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'src/assets', to: 'assets' },
+      ],
+    }),
   ],
   resolve: {
     extensions: ['.ts', '.js'],

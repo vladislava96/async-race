@@ -1,0 +1,9 @@
+.road {
+  border-bottom: 1px solid black;
+}
+
+.move-car-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}

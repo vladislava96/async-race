@@ -1,0 +1,12 @@
+.car-list-item {
+  list-style-type: none;
+  border: 1px solid black;
+}
+.race {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flag-svg {
+  margin-right: 150px;
+}
