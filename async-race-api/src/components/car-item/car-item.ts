@@ -12,8 +12,11 @@ export default class CarItem {
 
   private selectCarButton: HTMLButtonElement;
 
+  private deleteCarButton: HTMLButtonElement;
+
   constructor(private element: HTMLElement, private model: CarItemModel, private car: Car) {
-    this.onClick = this.onClick.bind(this);
+    this.selectCar = this.selectCar.bind(this);
+    this.deleteCar = this.deleteCar.bind(this);
     this.startEngine = this.startEngine.bind(this);
     this.stopEngine = this.stopEngine.bind(this);
 
@@ -29,9 +32,13 @@ export default class CarItem {
 
     const engineButtons = document.createElement('div');
 
+    this.deleteCarButton = document.createElement('button');
+    this.deleteCarButton.textContent = 'delete';
+    this.deleteCarButton.addEventListener('click', this.deleteCar);
+
     this.selectCarButton = document.createElement('button');
     this.selectCarButton.textContent = 'select';
-    this.selectCarButton.addEventListener('click', this.onClick);
+    this.selectCarButton.addEventListener('click', this.selectCar);
 
     this.startEngineButton = document.createElement('button');
     this.startEngineButton.textContent = 'A';
@@ -40,7 +47,12 @@ export default class CarItem {
     this.stopEngineButton = document.createElement('button');
     this.stopEngineButton.textContent = 'B';
     this.stopEngineButton.addEventListener('click', this.stopEngine);
-    engineButtons.append(this.selectCarButton, this.startEngineButton, this.stopEngineButton);
+    engineButtons.append(
+      this.deleteCarButton,
+      this.selectCarButton,
+      this.startEngineButton,
+      this.stopEngineButton,
+    );
 
     this.element.append(carName, engineButtons, trackElement);
   }
@@ -62,13 +74,17 @@ export default class CarItem {
     this.track.comeBackToStart();
   }
 
-  public destroy() {
-    this.selectCarButton.removeEventListener('click', this.onClick);
-    this.startEngineButton.removeEventListener('click', this.startEngine);
-    this.stopEngineButton.removeEventListener('click', this.stopEngine);
+  private selectCar() {
+    this.model.select();
   }
 
-  private onClick() {
-    this.model.select();
+  private deleteCar() {
+    this.model.delete();
+  }
+
+  public destroy() {
+    this.selectCarButton.removeEventListener('click', this.selectCar);
+    this.startEngineButton.removeEventListener('click', this.startEngine);
+    this.stopEngineButton.removeEventListener('click', this.stopEngine);
   }
 }

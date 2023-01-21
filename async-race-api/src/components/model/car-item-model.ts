@@ -1,3 +1,4 @@
+import { garage } from '../../constants/constants';
 import { Car } from '../../types';
 import API from '../api/api';
 
@@ -16,6 +17,13 @@ export default class CarItemModel extends EventTarget {
 
   public get color(): string {
     return this.car.color;
+  }
+
+  public delete(): void {
+    this.api.delete(garage, this.id)
+      .then(() => {
+        this.dispatchEvent(new CustomEvent('deleted'));
+      });
   }
 
   public select(): void {

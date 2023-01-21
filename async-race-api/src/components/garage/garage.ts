@@ -24,13 +24,14 @@ export default class Garage {
     this.element.className = 'garage-page';
 
     const carListElement = document.createElement('div');
-    this.carList = new CarList(carListElement, this.model.list);
-    this.element.appendChild(carListElement);
     this.creationForm = new CreationForm(this.model.creation, 'Create');
     this.updateForm = new CreationForm(this.model.update, 'Update');
-
     const controller = this.createController();
     this.element.append(controller);
+
+    this.carList = new CarList(carListElement, this.model.list);
+    this.element.appendChild(carListElement);
+
     // this.carList.createCarList();
   }
 

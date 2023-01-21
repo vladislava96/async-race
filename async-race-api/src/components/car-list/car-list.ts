@@ -17,16 +17,6 @@ export default class CarList {
     this.initialize();
   }
 
-  //   const row = document.createElement('div');
-  //   const selectButton = document.createElement('button');
-  //   selectButton.textContent = 'select';
-  //   const removeButton = document.createElement('button');
-  //   removeButton.textContent = 'remove';
-  //   const carName = document.createElement('span');
-
-  //   row.append(selectButton, removeButton, carName);
-
-  // eslint-disable-next-line class-methods-use-this
   private initialize(): void {
     this.carList = document.createElement('ul');
     this.carList.className = 'car-list';
@@ -71,4 +61,15 @@ export default class CarList {
       carItem.stopEngine();
     });
   }
+
+  //   const row = document.createElement('div');
+  //   const selectButton = document.createElement('button');
+  //   selectButton.textContent = 'select';
+  //   const removeButton = document.createElement('button');
+  //   removeButton.textContent = 'remove';
+  //   const carName = document.createElement('span');
+
+  //   row.append(selectButton, removeButton, carName);
+
+  // eslint-disable-next-line class-methods-use-this
 }

@@ -16,6 +16,7 @@ export default class CarListModel extends EventTarget {
   public constructor(private api: API) {
     super();
     this.onItemSelected = this.onItemSelected.bind(this);
+    this.onItemDeleted = this.onItemDeleted.bind(this);
     this.loadCars();
   }
 
@@ -28,12 +29,17 @@ export default class CarListModel extends EventTarget {
     this.dispatchEvent(new CustomEvent('item-selected'));
   }
 
+  private onItemDeleted() {
+    this.loadCars();
+  }
+
   public loadCars(): void {
     this.api.getAllCars().then((cars) => {
       this.cars = cars;
       this.carItemsValue = cars.map((car) => {
         const carItemModel = new CarItemModel(this.api, car);
         carItemModel.addEventListener('selected', this.onItemSelected);
+        carItemModel.addEventListener('deleted', this.onItemDeleted);
 
         return carItemModel;
       });

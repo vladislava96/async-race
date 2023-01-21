@@ -24,8 +24,7 @@ export default class App {
   }
 
   async start() {
-    document.body.appendChild(this.garageElement);
     this.header.render();
-    // this.garagePage.render();
+    document.body.appendChild(this.garageElement);
   }
 }
