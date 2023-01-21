@@ -1,4 +1,22 @@
 .new-car {
+  position: relative;
   display: inline-flex;
   align-items: flex-end;
+}
+
+.new-car-animated {
+  animation: 5s linear move forwards;
+}
+
+.new-car-animated-stop {
+  animation-play-state: paused;
+}
+
+@keyframes move {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: calc(100% - 120px);
+  }
 }

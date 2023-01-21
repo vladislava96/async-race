@@ -1,9 +1,9 @@
-import { ICars } from '../../types';
+import { Cars } from '../../types';
 import API from '../api/api';
 import CarItemModel from './car-item-model';
 
 export default class CarListModel extends EventTarget {
-  private cars: ICars = [];
+  private cars: Cars = [];
 
   private carItemsValue: Array<CarItemModel> = [];
 

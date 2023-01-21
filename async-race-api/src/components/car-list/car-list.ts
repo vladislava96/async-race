@@ -26,13 +26,6 @@ export default class CarList {
 
   //   row.append(selectButton, removeButton, carName);
 
-  //   const AB = document.createElement('div');
-  //   const aButton = document.createElement('button');
-  //   aButton.textContent = 'A';
-  //   const bButton = document.createElement('button');
-  //   bButton.textContent = 'B';
-  //   AB.append(aButton, bButton);
-
   // eslint-disable-next-line class-methods-use-this
   private initialize(): void {
     this.carList = document.createElement('ul');

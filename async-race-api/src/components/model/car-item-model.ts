@@ -1,8 +1,8 @@
-import { ICar } from '../../types';
+import { Car } from '../../types';
 import API from '../api/api';
 
 export default class CarItemModel extends EventTarget {
-  public constructor(private api: API, private car: ICar) {
+  public constructor(private api: API, private car: Car) {
     super();
   }
 
@@ -20,5 +20,14 @@ export default class CarItemModel extends EventTarget {
 
   public select(): void {
     this.dispatchEvent(new CustomEvent('selected'));
+  }
+
+  public async startEngine(): Promise<number> {
+    const data = await this.api.startOrStopEngine(this.id, 'started');
+    return data.distance / (data.velocity * 1000);
+  }
+
+  public async getDriveMode() {
+    return this.api.switchEngineToDriveMode(this.id);
   }
 }

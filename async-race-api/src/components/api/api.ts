@@ -1,14 +1,16 @@
 import { engine, garage } from '../../constants/constants';
 import {
-  ICars,
-  ICreateCar,
-  ICreateWinner,
+  Cars,
+  CreateCar,
+  CreateWinner,
+  StartedEngine,
   Status,
+  Success,
 } from '../../types';
 
 export default class API {
   // eslint-disable-next-line class-methods-use-this
-  public async getAllCars(): Promise<ICars> {
+  public async getAllCars(): Promise<Cars> {
     const response = await fetch(garage);
     const data = await response.json();
     return data;
@@ -29,7 +31,7 @@ export default class API {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async post(url: string, creationData: ICreateCar | ICreateWinner) {
+  async post(url: string, creationData: CreateCar | CreateWinner) {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -49,7 +51,7 @@ export default class API {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async update(url: string, id: number, updateData: ICreateCar | ICreateWinner) {
+  async update(url: string, id: number, updateData: CreateCar | CreateWinner) {
     const response = await fetch(`${url}/${id}`, {
       method: 'PUT',
       headers: {
@@ -61,7 +63,7 @@ export default class API {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async startOrStopEngine(id: number, status: Status) {
+  async startOrStopEngine(id: number, status: Status): Promise<StartedEngine> {
     const response = await fetch(`${engine}?id=${id}&status=${status}`, {
       method: 'PATCH',
     });
@@ -70,10 +72,19 @@ export default class API {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async switchEngineToDriveMode(id: number) {
+  async switchEngineToDriveMode(id: number): Promise<Success> {
     const response = await fetch(`${engine}?id=${id}&status=drive`, {
       method: 'PATCH',
     });
+    if (!response.ok) {
+      if (response.status === 500) {
+        throw Error('Car has been stopped suddenly. It\'s engine was broken down.');
+      }
+      if (response.status === 429) {
+        throw Error('Drive already in progress. You can\'t run drive for the same car twice while it\'s not stopped.');
+      }
+      throw Error('Unexpected error.');
+    }
     const data = await response.json();
     return data;
   }

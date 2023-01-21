@@ -1,28 +1,37 @@
-export interface ICar {
+export type Car = {
   name: string;
   color: string;
-  id: number
-}
+  id: number;
+};
 
-export type ICars = Array<ICar>;
+export type Cars = Array<Car>;
 
-export interface IWinner {
+export type Winner = {
   id: number;
   wins: number;
   time: number;
-}
-
-export type IWinners = Array<IWinner>;
-
-export type ICreateCar = {
-  name: string;
-  color: string
 };
 
-export type ICreateWinner = {
+export type Winners = Array<Winner>;
+
+export type StartedEngine = {
+  velocity: number;
+  distance: number;
+};
+
+export type Success = {
+  success: 'string';
+};
+
+export type CreateCar = {
+  name: string;
+  color: string;
+};
+
+export type CreateWinner = {
   id: number;
   wins: number;
-  time: number
+  time: number;
 };
 
 export type Status = 'started' | 'stopped';

@@ -1,34 +1,71 @@
 import Car from '../car/car';
 import CarItemModel from '../model/car-item-model';
+import Track from '../track/track';
+import './car-item.css';
 
 export default class CarItem {
+  private track: Track;
+
+  private startEngineButton: HTMLButtonElement;
+
+  private stopEngineButton: HTMLButtonElement;
+
+  private selectCarButton: HTMLButtonElement;
+
   constructor(private element: HTMLElement, private model: CarItemModel, private car: Car) {
-    this.initialize();
     this.onClick = this.onClick.bind(this);
-    this.element.addEventListener('click', this.onClick);
+    this.startEngine = this.startEngine.bind(this);
+    this.stopEngine = this.stopEngine.bind(this);
+
+    this.initialize();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private initialize() {
     const carName = document.createElement('span');
     carName.textContent = this.model.name;
 
-    const carImg = this.car.createCar(this.model.color);
+    const trackElement = document.createElement('div');
+    this.track = new Track(trackElement, this.car, this.model.color);
 
-    const flagImg = document.createElement('img');
-    flagImg.className = 'flag-svg';
-    flagImg.src = './assets/flag.svg';
+    const engineButtons = document.createElement('div');
 
-    const race = document.createElement('div');
-    race.className = 'race';
-    race.append(carImg, flagImg);
+    this.selectCarButton = document.createElement('button');
+    this.selectCarButton.textContent = 'select';
+    this.selectCarButton.addEventListener('click', this.onClick);
 
-    this.element.append(carName, race);
+    this.startEngineButton = document.createElement('button');
+    this.startEngineButton.textContent = 'A';
+    this.startEngineButton.addEventListener('click', this.startEngine);
+
+    this.stopEngineButton = document.createElement('button');
+    this.stopEngineButton.textContent = 'B';
+    this.stopEngineButton.addEventListener('click', this.stopEngine);
+    engineButtons.append(this.selectCarButton, this.startEngineButton, this.stopEngineButton);
+
+    this.element.append(carName, engineButtons, trackElement);
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  async startEngine() {
+    const time = await this.model.startEngine();
+    this.track.startMoving(time);
+    try {
+      await this.model.getDriveMode();
+    } catch (error) {
+      if (error instanceof Error) {
+        global.console.error(error.message);
+      }
+      this.track.stopHere();
+    }
+  }
+
+  stopEngine() {
+    this.track.comeBackToStart();
+  }
+
   public destroy() {
-    this.element.removeEventListener('click', this.onClick);
+    this.selectCarButton.removeEventListener('click', this.onClick);
+    this.startEngineButton.removeEventListener('click', this.startEngine);
+    this.stopEngineButton.removeEventListener('click', this.stopEngine);
   }
 
   private onClick() {
