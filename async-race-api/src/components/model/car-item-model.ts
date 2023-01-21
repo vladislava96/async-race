@@ -1,15 +1,24 @@
 import { ICar } from '../../types';
 import API from '../api/api';
 
-export default class CarItemModel {
+export default class CarItemModel extends EventTarget {
   public constructor(private api: API, private car: ICar) {
+    super();
   }
 
-  get name(): string {
+  public get id(): number {
+    return this.car.id;
+  }
+
+  public get name(): string {
     return this.car.name;
   }
 
-  get color(): string {
+  public get color(): string {
     return this.car.color;
+  }
+
+  public select(): void {
+    this.dispatchEvent(new CustomEvent('selected'));
   }
 }

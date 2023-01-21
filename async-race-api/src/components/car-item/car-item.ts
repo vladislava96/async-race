@@ -4,6 +4,8 @@ import CarItemModel from '../model/car-item-model';
 export default class CarItem {
   constructor(private element: HTMLElement, private model: CarItemModel, private car: Car) {
     this.initialize();
+    this.onClick = this.onClick.bind(this);
+    this.element.addEventListener('click', this.onClick);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -26,5 +28,10 @@ export default class CarItem {
 
   // eslint-disable-next-line class-methods-use-this
   public destroy() {
+    this.element.removeEventListener('click', this.onClick);
+  }
+
+  private onClick() {
+    this.model.select();
   }
 }

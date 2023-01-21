@@ -1,42 +1,66 @@
 import CreationModel from '../model/creation-model';
 
 export default class CreationForm {
-  public constructor(private model: CreationModel) {
+  textInput: HTMLInputElement;
+
+  colorInput: HTMLInputElement;
+
+  carCreationForm: HTMLFormElement;
+
+  public constructor(private model: CreationModel, private submitButtonCaption: string) {
+    this.onModelTextChanged = this.onModelTextChanged.bind(this);
+    this.onModelColorChanged = this.onModelColorChanged.bind(this);
+    this.submitForm = this.submitForm.bind(this);
+    this.model.addEventListener('text-changed', this.onModelTextChanged);
+    this.model.addEventListener('color-changed', this.onModelColorChanged);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  submitForm(event: Event, textInput: HTMLInputElement, colorInput: HTMLInputElement) {
+  submitForm(event: Event) {
     event?.preventDefault();
-    this.model.textValue = textInput.value;
-    this.model.colorValue = colorInput.value;
+    this.model.textValue = this.textInput.value;
+    this.model.colorValue = this.colorInput.value;
     this.model.submit();
   }
 
+  onModelTextChanged() {
+    this.textInput.value = this.model.textValue;
+  }
+
+  onModelColorChanged() {
+    this.colorInput.value = this.model.colorValue;
+  }
+
   renderCreationBlock() {
-    const carCreationForm = document.createElement('form');
-    carCreationForm.className = 'car-creation-form';
+    this.carCreationForm = document.createElement('form');
+    this.carCreationForm.className = 'car-creation-form';
 
-    const textInput = document.createElement('input');
-    textInput.type = 'text';
-    textInput.className = 'text-input';
-    textInput.id = 'create-name';
-    textInput.required = true;
+    this.textInput = document.createElement('input');
+    this.textInput.type = 'text';
+    this.textInput.className = 'text-input';
+    this.textInput.id = 'create-name';
+    this.textInput.required = true;
 
-    const colorInput = document.createElement('input');
-    colorInput.type = 'color';
-    colorInput.className = 'color-input';
-    colorInput.id = 'create-color';
-    colorInput.required = true;
+    this.colorInput = document.createElement('input');
+    this.colorInput.type = 'color';
+    this.colorInput.className = 'color-input';
+    this.colorInput.id = 'create-color';
+    this.colorInput.required = true;
 
     const createButton = document.createElement('button');
     createButton.type = 'submit';
-    createButton.textContent = 'Create';
+    createButton.textContent = this.submitButtonCaption;
     createButton.className = 'color-button';
     createButton.id = 'create-button';
 
-    carCreationForm.append(textInput, colorInput, createButton);
-    carCreationForm.addEventListener('submit', (event) => this.submitForm(event, textInput, colorInput));
+    this.carCreationForm.append(this.textInput, this.colorInput, createButton);
+    this.carCreationForm.addEventListener('submit', this.submitForm);
 
-    return carCreationForm;
+    return this.carCreationForm;
+  }
+
+  destroy() {
+    this.model.removeEventListener('text-changed', this.onModelTextChanged);
+    this.model.removeEventListener('color-changed', this.onModelColorChanged);
+    this.carCreationForm.removeEventListener('submit', this.submitForm);
   }
 }

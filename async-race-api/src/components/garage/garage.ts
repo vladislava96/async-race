@@ -6,6 +6,8 @@ import GarageModel from '../model/garage-model';
 export default class Garage {
   private creationForm: CreationForm;
 
+  private updateForm: CreationForm;
+
   private carList: CarList;
 
   public constructor(private element: HTMLElement, private model: GarageModel) {
@@ -18,7 +20,8 @@ export default class Garage {
     const carListElement = document.createElement('div');
     this.carList = new CarList(carListElement, this.model.list);
     this.element.appendChild(carListElement);
-    this.creationForm = new CreationForm(this.model.creation);
+    this.creationForm = new CreationForm(this.model.creation, 'Create');
+    this.updateForm = new CreationForm(this.model.update, 'Update');
 
     const controller = this.createController();
     this.element.append(controller);
@@ -52,7 +55,7 @@ export default class Garage {
 
   public createController(): HTMLDivElement {
     const carCreationBlock = this.creationForm.renderCreationBlock();
-    const carUpdateBlock = this.renderUpdateBlock();
+    const carUpdateBlock = this.updateForm.renderCreationBlock();
 
     const controller = document.createElement('div');
     controller.className = 'controller';
