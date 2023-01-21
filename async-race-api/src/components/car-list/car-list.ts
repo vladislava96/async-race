@@ -37,12 +37,12 @@ export default class CarList {
 
   public destroy(): void {
     this.model.removeEventListener('cars-updated', this.onCarsUpdated);
+    this.destroyCarItems();
   }
 
   private onCarsUpdated(): void {
     this.carList.innerHTML = '';
-    this.carItems.forEach((carItem) => carItem.destroy());
-    this.carItems = [];
+    this.destroyCarItems();
 
     this.model.carItems.forEach((carItemModel) => {
       const carListItem = document.createElement('li');
@@ -52,6 +52,23 @@ export default class CarList {
       this.carItems.push(carItem);
 
       this.carList.appendChild(carListItem);
+    });
+  }
+
+  private destroyCarItems() {
+    this.carItems.forEach((carItem) => carItem.destroy());
+    this.carItems = [];
+  }
+
+  public startCars() {
+    this.carItems.forEach((carItem) => {
+      carItem.startEngine();
+    });
+  }
+
+  public stopCars() {
+    this.carItems.forEach((carItem) => {
+      carItem.stopEngine();
     });
   }
 }

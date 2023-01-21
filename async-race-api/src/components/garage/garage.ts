@@ -10,7 +10,13 @@ export default class Garage {
 
   private carList: CarList;
 
+  private raceButton: HTMLButtonElement;
+
+  private resetButton: HTMLButtonElement;
+
   public constructor(private element: HTMLElement, private model: GarageModel) {
+    this.onRaceButtonClick = this.onRaceButtonClick.bind(this);
+    this.onResetButtonClick = this.onResetButtonClick.bind(this);
     this.initialize();
   }
 
@@ -60,32 +66,40 @@ export default class Garage {
     const controller = document.createElement('div');
     controller.className = 'controller';
 
-    const raceButton = document.createElement('button');
-    raceButton.textContent = 'race';
-    const resetButton = document.createElement('button');
-    resetButton.textContent = 'reset';
+    this.raceButton = document.createElement('button');
+    this.raceButton.textContent = 'race';
+    this.raceButton.addEventListener('click', this.onRaceButtonClick);
+
+    this.resetButton = document.createElement('button');
+    this.resetButton.textContent = 'reset';
+    this.resetButton.addEventListener('click', this.onResetButtonClick);
+
     const generateButton = document.createElement('button');
     generateButton.textContent = 'generate cars';
     const controllerButtons = document.createElement('div');
 
-    controllerButtons.append(raceButton, resetButton, generateButton);
+    controllerButtons.append(this.raceButton, this.resetButton, generateButton);
     controller.append(carCreationBlock, carUpdateBlock, controllerButtons);
 
     return controller;
   }
 
-  // renderRace(): HTMLDivElement {
-  //   const race = document.createElement('div');
-  //   race.className = 'race';
+  private onRaceButtonClick() {
+    this.carList.startCars();
+  }
 
-  //   const road = this.carList.createCarList();
+  private onResetButtonClick() {
+    this.carList.stopCars();
+  }
 
-  //   race.append(road);
+  public destroy() {
+    this.carList.destroy();
+    this.creationForm.destroy();
+    this.updateForm.destroy();
+    this.raceButton.removeEventListener('click', this.onRaceButtonClick);
+    this.resetButton.removeEventListener('click', this.onResetButtonClick);
+  }
 
-  //   return race;
-  // }
-
-  // eslint-disable-next-line class-methods-use-this
   // renderGarageInfo() {
   //   const garageInfo = document.createElement('div');
 
