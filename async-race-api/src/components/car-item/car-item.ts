@@ -1,3 +1,4 @@
+import { CarRace } from '../../types';
 import Car from '../car/car';
 import CarItemModel from '../model/car-item-model';
 import Track from '../track/track';
@@ -57,17 +58,27 @@ export default class CarItem {
     this.element.append(carName, engineButtons, trackElement);
   }
 
-  async startEngine() {
-    const time = await this.model.startEngine();
-    this.track.startMoving(time);
-    try {
-      await this.model.getDriveMode();
-    } catch (error) {
-      if (error instanceof Error) {
-        global.console.error(error.message);
-      }
-      this.track.stopHere();
-    }
+  startEngine(): Promise<CarRace> {
+    return new Promise((resolve, reject) => {
+      this.model.startEngine().then((carRace) => {
+        const timerId = setTimeout(() => resolve(carRace), carRace.time * 1000);
+
+        this.track.startMoving(carRace.time);
+
+        this.model.getDriveMode()
+          .then(() => carRace)
+          .catch((error) => {
+            if (error instanceof Error) {
+              global.console.error(error.message);
+            }
+
+            this.track.stopHere();
+
+            clearTimeout(timerId);
+            reject(error);
+          });
+      });
+    });
   }
 
   stopEngine() {

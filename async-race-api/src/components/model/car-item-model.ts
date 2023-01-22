@@ -1,5 +1,5 @@
 import { garage } from '../../constants/constants';
-import { Car } from '../../types';
+import { Car, CarRace } from '../../types';
 import API from '../api/api';
 
 export default class CarItemModel extends EventTarget {
@@ -30,9 +30,15 @@ export default class CarItemModel extends EventTarget {
     this.dispatchEvent(new CustomEvent('selected'));
   }
 
-  public async startEngine(): Promise<number> {
+  public async startEngine(): Promise<CarRace> {
     const data = await this.api.startOrStopEngine(this.id, 'started');
-    return data.distance / (data.velocity * 1000);
+    const time = data.distance / (data.velocity * 1000);
+    return {
+      name: this.name,
+      color: this.color,
+      id: this.id,
+      time,
+    };
   }
 
   public async getDriveMode() {

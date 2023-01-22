@@ -1,7 +1,7 @@
-import { garage } from '../../constants/constants';
-import { Cars } from '../../types';
+import { garage, winners } from '../../constants/constants';
+import { CarRace, Cars } from '../../types';
 import API from '../api/api';
-import CarFactory from '../car-factiry/car-factory';
+import CarFactory from '../car-factory/car-factory';
 import CarItemModel from './car-item-model';
 
 export default class CarListModel extends EventTarget {
@@ -14,6 +14,8 @@ export default class CarListModel extends EventTarget {
   private numberPageValue: number = 1;
 
   private numberOfCarsValue: number = 0;
+
+  private winnerData: CarRace;
 
   public get carItems(): ReadonlyArray<CarItemModel> {
     return this.carItemsValue;
@@ -53,6 +55,34 @@ export default class CarListModel extends EventTarget {
 
   public get isLastPage(): boolean {
     return this.numberPage >= this.numberOfPages;
+  }
+
+  public get winner(): CarRace {
+    return this.winnerData;
+  }
+
+  public set winner(winner: CarRace) {
+    this.winnerData = winner;
+    this.onSetWinner();
+  }
+
+  onSetWinner() {
+    this.api.getOne(winners, this.winnerData.id)
+      .then((winner) => {
+        const updateWinner = {
+          wins: winner.wins + 1,
+          time: Math.min(this.winnerData.time, winner.time),
+        };
+        this.api.update(winners, this.winnerData.id, updateWinner);
+      })
+      .catch(() => {
+        const newWinner = {
+          id: this.winnerData.id,
+          wins: 1,
+          time: this.winnerData.time,
+        };
+        this.api.post(winners, newWinner);
+      });
   }
 
   private onItemSelected(event: Event) {

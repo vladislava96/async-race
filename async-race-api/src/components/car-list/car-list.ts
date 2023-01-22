@@ -2,13 +2,14 @@ import './car-list.css';
 import Car from '../car/car';
 import CarListModel from '../model/car-list-model';
 import CarItem from '../car-item/car-item';
+import { CarRace } from '../../types';
 
 export default class CarList {
   private car: Car;
 
-  private carList: HTMLUListElement;
-
   private carItems: CarItem[] = [];
+
+  private carList: HTMLUListElement;
 
   private pageNumber: HTMLSpanElement;
 
@@ -24,6 +25,7 @@ export default class CarList {
     this.car = new Car();
     this.onButtonNext = this.onButtonNext.bind(this);
     this.onButtonPrev = this.onButtonPrev.bind(this);
+    this.createVictoryMessage = this.createVictoryMessage.bind(this);
     this.initialize();
   }
 
@@ -55,6 +57,16 @@ export default class CarList {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  createVictoryMessage(carRace: CarRace) {
+    const victoryMessage = document.createElement('span');
+    victoryMessage.textContent = `Winner: ${carRace.name} with time: ${carRace.time}`;
+    document.body.append(victoryMessage);
+    setTimeout(() => {
+      victoryMessage.remove();
+    }, 6000);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   createPaginationButtons() {
     const paginationButtons = document.createElement('div');
     this.buttonPrev = document.createElement('button');
@@ -83,11 +95,6 @@ export default class CarList {
     }
   }
 
-  public destroy(): void {
-    this.model.removeEventListener('cars-updated', this.onCarsUpdated);
-    this.destroyCarItems();
-  }
-
   private onCarsUpdated(): void {
     this.carList.innerHTML = '';
     this.destroyCarItems();
@@ -107,20 +114,43 @@ export default class CarList {
     this.buttonPrev.disabled = this.model.isFirstPage;
   }
 
-  private destroyCarItems() {
-    this.carItems.forEach((carItem) => carItem.destroy());
-    this.carItems = [];
-  }
-
   public startCars() {
-    this.carItems.forEach((carItem) => {
-      carItem.startEngine();
+    const any = new Promise<CarRace>((resolve, reject) => {
+      let resolved = false;
+      const promises = this.carItems.map(
+        (carItem) => carItem.startEngine().then((carRace) => {
+          if (!resolved) {
+            resolved = true;
+            resolve(carRace);
+          }
+        }),
+      );
+
+      Promise.all(promises).then(() => {
+        if (!resolved) {
+          reject(new Error('All cars are crashed.'));
+        }
+      });
     });
+
+    any
+      .then((carRace) => this.createVictoryMessage(carRace))
+      .catch((error) => global.console.error(error));
   }
 
   public stopCars() {
     this.carItems.forEach((carItem) => {
       carItem.stopEngine();
     });
+  }
+
+  public destroy(): void {
+    this.model.removeEventListener('cars-updated', this.onCarsUpdated);
+    this.destroyCarItems();
+  }
+
+  private destroyCarItems() {
+    this.carItems.forEach((carItem) => carItem.destroy());
+    this.carItems = [];
   }
 }

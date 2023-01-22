@@ -4,6 +4,13 @@ export type Car = {
   id: number;
 };
 
+export type CarRace = {
+  name: string;
+  color: string;
+  id: number;
+  time: number;
+};
+
 export type Cars = Array<Car>;
 
 export type Winner = {
@@ -29,7 +36,6 @@ export type CreateCar = {
 };
 
 export type CreateWinner = {
-  id: number;
   wins: number;
   time: number;
 };
