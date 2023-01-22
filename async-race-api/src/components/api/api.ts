@@ -10,8 +10,15 @@ import {
 
 export default class API {
   // eslint-disable-next-line class-methods-use-this
-  public async getAllCars(): Promise<Cars> {
-    const response = await fetch(garage);
+  public async getCarsOnPage(page: number): Promise<Cars> {
+    const response = await fetch(`${garage}?_page=${page}&_limit=7`);
+    const data = await response.json();
+    return data;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public async getCars(): Promise<Cars> {
+    const response = await fetch(`${garage}`);
     const data = await response.json();
     return data;
   }

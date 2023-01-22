@@ -9,6 +9,10 @@ export default class CarListModel extends EventTarget {
 
   private selectedCarItemValue: CarItemModel;
 
+  private numberPageValue: number = 1;
+
+  private numberOfCarsValue: number = 0;
+
   public get carItems(): ReadonlyArray<CarItemModel> {
     return this.carItemsValue;
   }
@@ -20,8 +24,33 @@ export default class CarListModel extends EventTarget {
     this.loadCars();
   }
 
+  public get numberOfCars(): number {
+    return this.numberOfCarsValue;
+  }
+
+  public get numberOfPages(): number {
+    return Math.ceil(this.numberOfCars / 7);
+  }
+
   public get selectedCarItem(): CarItemModel {
     return this.selectedCarItemValue;
+  }
+
+  public set numberPage(numberPage: number) {
+    this.numberPageValue = numberPage;
+    this.loadCars();
+  }
+
+  public get numberPage(): number {
+    return this.numberPageValue;
+  }
+
+  public get isFirstPage(): boolean {
+    return this.numberPage === 1;
+  }
+
+  public get isLastPage(): boolean {
+    return this.numberPage >= this.numberOfPages;
   }
 
   private onItemSelected(event: Event) {
@@ -29,22 +58,24 @@ export default class CarListModel extends EventTarget {
     this.dispatchEvent(new CustomEvent('item-selected'));
   }
 
-  private onItemDeleted() {
+  private onItemDeleted(): void {
     this.loadCars();
   }
 
-  public loadCars(): void {
-    this.api.getAllCars().then((cars) => {
-      this.cars = cars;
-      this.carItemsValue = cars.map((car) => {
-        const carItemModel = new CarItemModel(this.api, car);
-        carItemModel.addEventListener('selected', this.onItemSelected);
-        carItemModel.addEventListener('deleted', this.onItemDeleted);
+  public async loadCars(): Promise<void> {
+    const cars = await this.api.getCarsOnPage(this.numberPageValue);
+    this.cars = cars;
+    this.carItemsValue = cars.map((car) => {
+      const carItemModel = new CarItemModel(this.api, car);
+      carItemModel.addEventListener('selected', this.onItemSelected);
+      carItemModel.addEventListener('deleted', this.onItemDeleted);
 
-        return carItemModel;
-      });
-
-      this.dispatchEvent(new CustomEvent('cars-updated'));
+      return carItemModel;
     });
+
+    const data = await this.api.getCars();
+    this.numberOfCarsValue = data.length;
+
+    this.dispatchEvent(new CustomEvent('cars-updated'));
   }
 }

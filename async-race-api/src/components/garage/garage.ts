@@ -100,31 +100,4 @@ export default class Garage {
     this.raceButton.removeEventListener('click', this.onRaceButtonClick);
     this.resetButton.removeEventListener('click', this.onResetButtonClick);
   }
-
-  // renderGarageInfo() {
-  //   const garageInfo = document.createElement('div');
-
-  //   const title = document.createElement('h2');
-  //   title.textContent = 'Garage (4)';
-
-  //   const pageNamber = document.createElement('span');
-  //   pageNamber.textContent = 'Page №1';
-
-  //   garageInfo.append(title, pageNamber);
-
-  //   return garageInfo;
-  // }
-
-  // eslint-disable-next-line class-methods-use-this
-  // createPaginationButtons() {
-  //   const paginationButtons = document.createElement('div');
-  //   const buttonPrev = document.createElement('button');
-  //   buttonPrev.textContent = 'Prev';
-
-  //   const buttonNext = document.createElement('button');
-  //   buttonNext.textContent = 'Next';
-
-  //   paginationButtons.append(buttonPrev, buttonNext);
-  //   return paginationButtons;
-  // }
 }
