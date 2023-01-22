@@ -1,5 +1,7 @@
+import { garage } from '../../constants/constants';
 import { Cars } from '../../types';
 import API from '../api/api';
+import CarFactory from '../car-factiry/car-factory';
 import CarItemModel from './car-item-model';
 
 export default class CarListModel extends EventTarget {
@@ -60,6 +62,22 @@ export default class CarListModel extends EventTarget {
 
   private onItemDeleted(): void {
     this.loadCars();
+  }
+
+  public generateCars() {
+    const numberGeneratedCars = 100;
+    const carFactory = CarFactory.create();
+    const promises = [];
+
+    for (let i = 1; i <= numberGeneratedCars; i += 1) {
+      const carData = carFactory.generateCar();
+      promises.push(this.api.post(garage, carData));
+    }
+
+    Promise.all(promises)
+      .then(() => {
+        this.loadCars();
+      });
   }
 
   public async loadCars(): Promise<void> {

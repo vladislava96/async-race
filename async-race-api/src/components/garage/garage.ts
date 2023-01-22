@@ -14,9 +14,12 @@ export default class Garage {
 
   private resetButton: HTMLButtonElement;
 
+  private generateButton: HTMLButtonElement;
+
   public constructor(private element: HTMLElement, private model: GarageModel) {
     this.onRaceButtonClick = this.onRaceButtonClick.bind(this);
     this.onResetButtonClick = this.onResetButtonClick.bind(this);
+    this.onGenerateButtonClick = this.onGenerateButtonClick.bind(this);
     this.initialize();
   }
 
@@ -75,11 +78,13 @@ export default class Garage {
     this.resetButton.textContent = 'reset';
     this.resetButton.addEventListener('click', this.onResetButtonClick);
 
-    const generateButton = document.createElement('button');
-    generateButton.textContent = 'generate cars';
+    this.generateButton = document.createElement('button');
+    this.generateButton.textContent = 'generate cars';
+    this.generateButton.addEventListener('click', this.onGenerateButtonClick);
+
     const controllerButtons = document.createElement('div');
 
-    controllerButtons.append(this.raceButton, this.resetButton, generateButton);
+    controllerButtons.append(this.raceButton, this.resetButton, this.generateButton);
     controller.append(carCreationBlock, carUpdateBlock, controllerButtons);
 
     return controller;
@@ -91,6 +96,10 @@ export default class Garage {
 
   private onResetButtonClick() {
     this.carList.stopCars();
+  }
+
+  private onGenerateButtonClick() {
+    this.model.generateCars();
   }
 
   public destroy() {

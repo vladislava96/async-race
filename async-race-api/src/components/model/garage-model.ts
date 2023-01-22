@@ -21,6 +21,10 @@ export default class GarageModel {
     this.update.addEventListener(CreationModel.SUBMITTED, this.onCreationSubmitted);
   }
 
+  generateCars() {
+    this.list.generateCars();
+  }
+
   private onCreationSubmitted(): void {
     this.list.loadCars();
   }
