@@ -1,0 +1,13 @@
+.winners-page-hide {
+  display: none;
+}
+
+.winners-page {
+  border: solid 1px black;
+  width: 50%;
+}
+
+.table-of-winners {
+  border: 1px solid red;
+  width: 100%;
+}

@@ -43,3 +43,11 @@ export type CreateWinner = {
 export type Status = 'started' | 'stopped';
 export type Sort = 'id' | 'wins' | 'time';
 export type Order = 'ASC' | 'DESC';
+
+export type DataTable = {
+  number: number;
+  car: string;
+  name: string;
+  wins: number;
+  time: number;
+};

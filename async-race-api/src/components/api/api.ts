@@ -1,4 +1,4 @@
-import { engine, garage } from '../../constants/constants';
+import { engine, garage, winners } from '../../constants/constants';
 import {
   Cars,
   CreateCar,
@@ -6,12 +6,20 @@ import {
   StartedEngine,
   Status,
   Success,
+  Winners,
 } from '../../types';
 
 export default class API {
   // eslint-disable-next-line class-methods-use-this
   public async getCarsOnPage(page: number): Promise<Cars> {
     const response = await fetch(`${garage}?_page=${page}&_limit=7`);
+    const data = await response.json();
+    return data;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public async getWinnersOnPage(page: number): Promise<Winners> {
+    const response = await fetch(`${winners}?_page=${page}&_limit=10`);
     const data = await response.json();
     return data;
   }
@@ -33,6 +41,9 @@ export default class API {
   // eslint-disable-next-line class-methods-use-this
   async getOne(url: string, id: number) {
     const response = await fetch(`${url}/${id}`);
+    if (!response.ok) {
+      throw new Error('Unexpected error.');
+    }
     const data = await response.json();
     return data;
   }

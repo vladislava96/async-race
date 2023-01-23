@@ -3,6 +3,8 @@ import { Car, CarRace } from '../../types';
 import API from '../api/api';
 
 export default class CarItemModel extends EventTarget {
+  private raceTimeValue: number = 0;
+
   public constructor(private api: API, private car: Car) {
     super();
   }
@@ -19,6 +21,10 @@ export default class CarItemModel extends EventTarget {
     return this.car.color;
   }
 
+  public get raceTime(): number {
+    return this.raceTimeValue;
+  }
+
   public delete(): void {
     this.api.delete(garage, this.id)
       .then(() => {
@@ -30,7 +36,7 @@ export default class CarItemModel extends EventTarget {
     this.dispatchEvent(new CustomEvent('selected'));
   }
 
-  public async startEngine(): Promise<CarRace> {
+  private async startEngine(): Promise<CarRace> {
     const data = await this.api.startOrStopEngine(this.id, 'started');
     const time = data.distance / (data.velocity * 1000);
     return {
@@ -39,6 +45,36 @@ export default class CarItemModel extends EventTarget {
       id: this.id,
       time,
     };
+  }
+
+  public comeBackToStart(): void {
+    this.dispatchEvent(new CustomEvent('come-back-to-start'));
+    // this.track.comeBackToStart();
+  }
+
+  public startRace(): Promise<CarRace> {
+    return new Promise((resolve, reject) => {
+      this.startEngine().then((carRace) => {
+        this.raceTimeValue = carRace.time;
+
+        const timerId = setTimeout(() => resolve(carRace), carRace.time * 1000);
+
+        this.dispatchEvent(new CustomEvent('engine-started'));
+
+        this.getDriveMode()
+          .then(() => carRace)
+          .catch((error) => {
+            if (error instanceof Error) {
+              global.console.error(error.message);
+            }
+
+            this.dispatchEvent(new CustomEvent('engine-stopped'));
+
+            clearTimeout(timerId);
+            reject(error);
+          });
+      });
+    });
   }
 
   public async getDriveMode() {

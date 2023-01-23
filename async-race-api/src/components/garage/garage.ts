@@ -34,8 +34,6 @@ export default class Garage {
 
     this.carList = new CarList(carListElement, this.model.list);
     this.element.appendChild(carListElement);
-
-    // this.carList.createCarList();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -91,15 +89,19 @@ export default class Garage {
   }
 
   private onRaceButtonClick() {
-    this.carList.startCars();
+    this.model.startCars();
   }
 
   private onResetButtonClick() {
-    this.carList.stopCars();
+    this.model.resetCars();
   }
 
   private onGenerateButtonClick() {
     this.model.generateCars();
+  }
+
+  public toWinnersPage() {
+    this.carList.toWinnersPage();
   }
 
   public destroy() {

@@ -1,4 +1,3 @@
-import { CarRace } from '../../types';
 import Car from '../car/car';
 import CarItemModel from '../model/car-item-model';
 import Track from '../track/track';
@@ -18,8 +17,11 @@ export default class CarItem {
   constructor(private element: HTMLElement, private model: CarItemModel, private car: Car) {
     this.selectCar = this.selectCar.bind(this);
     this.deleteCar = this.deleteCar.bind(this);
-    this.startEngine = this.startEngine.bind(this);
+    this.onStartEngineButtonClick = this.onStartEngineButtonClick.bind(this);
     this.stopEngine = this.stopEngine.bind(this);
+    this.onEngineStarted = this.onEngineStarted.bind(this);
+    this.onEngineStopped = this.onEngineStopped.bind(this);
+    this.onComeBackToStart = this.onComeBackToStart.bind(this);
 
     this.initialize();
   }
@@ -43,7 +45,7 @@ export default class CarItem {
 
     this.startEngineButton = document.createElement('button');
     this.startEngineButton.textContent = 'A';
-    this.startEngineButton.addEventListener('click', this.startEngine);
+    this.startEngineButton.addEventListener('click', this.onStartEngineButtonClick);
 
     this.stopEngineButton = document.createElement('button');
     this.stopEngineButton.textContent = 'B';
@@ -56,46 +58,46 @@ export default class CarItem {
     );
 
     this.element.append(carName, engineButtons, trackElement);
+
+    this.model.addEventListener('engine-started', this.onEngineStarted);
+    this.model.addEventListener('engine-stopped', this.onEngineStopped);
+    this.model.addEventListener('come-back-to-start', this.onComeBackToStart);
   }
 
-  startEngine(): Promise<CarRace> {
-    return new Promise((resolve, reject) => {
-      this.model.startEngine().then((carRace) => {
-        const timerId = setTimeout(() => resolve(carRace), carRace.time * 1000);
-
-        this.track.startMoving(carRace.time);
-
-        this.model.getDriveMode()
-          .then(() => carRace)
-          .catch((error) => {
-            if (error instanceof Error) {
-              global.console.error(error.message);
-            }
-
-            this.track.stopHere();
-
-            clearTimeout(timerId);
-            reject(error);
-          });
-      });
-    });
+  private onStartEngineButtonClick(): void {
+    this.model.startRace();
   }
 
-  stopEngine() {
-    this.track.comeBackToStart();
+  private stopEngine(): void {
+    this.model.comeBackToStart();
   }
 
-  private selectCar() {
+  private selectCar(): void {
     this.model.select();
   }
 
-  private deleteCar() {
+  private deleteCar(): void {
     this.model.delete();
   }
 
-  public destroy() {
+  private onComeBackToStart(): void {
+    this.track.comeBackToStart();
+  }
+
+  private onEngineStarted(): void {
+    this.track.startMoving(this.model.raceTime);
+  }
+
+  private onEngineStopped(): void {
+    this.track.stopHere();
+  }
+
+  public destroy(): void {
     this.selectCarButton.removeEventListener('click', this.selectCar);
-    this.startEngineButton.removeEventListener('click', this.startEngine);
+    this.startEngineButton.removeEventListener('click', this.onStartEngineButtonClick);
     this.stopEngineButton.removeEventListener('click', this.stopEngine);
+    this.model.removeEventListener('engine-started', this.onEngineStarted);
+    this.model.removeEventListener('engine-stopped', this.onEngineStopped);
+    this.model.removeEventListener('come-back-to-start', this.onComeBackToStart);
   }
 }

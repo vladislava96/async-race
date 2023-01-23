@@ -2,7 +2,6 @@ import './car-list.css';
 import Car from '../car/car';
 import CarListModel from '../model/car-list-model';
 import CarItem from '../car-item/car-item';
-import { CarRace } from '../../types';
 
 export default class CarList {
   private car: Car;
@@ -19,6 +18,8 @@ export default class CarList {
 
   private buttonPrev: HTMLButtonElement;
 
+  private victoryMessage: HTMLDivElement;
+
   public constructor(private element: HTMLElement, private model: CarListModel) {
     this.onCarsUpdated = this.onCarsUpdated.bind(this);
 
@@ -26,6 +27,8 @@ export default class CarList {
     this.onButtonNext = this.onButtonNext.bind(this);
     this.onButtonPrev = this.onButtonPrev.bind(this);
     this.createVictoryMessage = this.createVictoryMessage.bind(this);
+    this.createVictoryMessage = this.createVictoryMessage.bind(this);
+
     this.initialize();
   }
 
@@ -37,8 +40,11 @@ export default class CarList {
     this.model.addEventListener('cars-updated', this.onCarsUpdated);
 
     const paginationButtons = this.createPaginationButtons();
-
+    this.victoryMessage = document.createElement('div');
+    this.victoryMessage.className = 'victory-message-hide';
     this.element.append(garageInfo, this.carList, paginationButtons);
+
+    this.model.addEventListener('post-new-winner', this.createVictoryMessage);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -57,13 +63,15 @@ export default class CarList {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  createVictoryMessage(carRace: CarRace) {
-    const victoryMessage = document.createElement('span');
-    victoryMessage.textContent = `Winner: ${carRace.name} with time: ${carRace.time}`;
-    document.body.append(victoryMessage);
+  createVictoryMessage() {
+    this.victoryMessage.classList.remove('victory-message-hide');
+    this.victoryMessage.classList.add('victory-message-show');
+    this.victoryMessage.textContent = `Winner: ${this.model.winner.name} with time: ${this.model.winner.time.toFixed(2)}`;
+    document.body.append(this.victoryMessage);
     setTimeout(() => {
-      victoryMessage.remove();
-    }, 6000);
+      this.victoryMessage.classList.remove('victory-message-show');
+      this.victoryMessage.classList.add('victory-message-hide');
+    }, 4000);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -95,6 +103,10 @@ export default class CarList {
     }
   }
 
+  toWinnersPage() {
+    this.model.stopCars();
+  }
+
   private onCarsUpdated(): void {
     this.carList.innerHTML = '';
     this.destroyCarItems();
@@ -114,38 +126,9 @@ export default class CarList {
     this.buttonPrev.disabled = this.model.isFirstPage;
   }
 
-  public startCars() {
-    const any = new Promise<CarRace>((resolve, reject) => {
-      let resolved = false;
-      const promises = this.carItems.map(
-        (carItem) => carItem.startEngine().then((carRace) => {
-          if (!resolved) {
-            resolved = true;
-            resolve(carRace);
-          }
-        }),
-      );
-
-      Promise.all(promises).then(() => {
-        if (!resolved) {
-          reject(new Error('All cars are crashed.'));
-        }
-      });
-    });
-
-    any
-      .then((carRace) => this.createVictoryMessage(carRace))
-      .catch((error) => global.console.error(error));
-  }
-
-  public stopCars() {
-    this.carItems.forEach((carItem) => {
-      carItem.stopEngine();
-    });
-  }
-
   public destroy(): void {
     this.model.removeEventListener('cars-updated', this.onCarsUpdated);
+    this.model.removeEventListener('post-new-winner', this.createVictoryMessage);
     this.destroyCarItems();
   }
 

@@ -61,11 +61,6 @@ export default class CarListModel extends EventTarget {
     return this.winnerData;
   }
 
-  public set winner(winner: CarRace) {
-    this.winnerData = winner;
-    this.onSetWinner();
-  }
-
   onSetWinner() {
     this.api.getOne(winners, this.winnerData.id)
       .then((winner) => {
@@ -82,6 +77,9 @@ export default class CarListModel extends EventTarget {
           time: this.winnerData.time,
         };
         this.api.post(winners, newWinner);
+      })
+      .then(() => {
+        this.dispatchEvent(new CustomEvent('post-new-winner'));
       });
   }
 
@@ -92,6 +90,31 @@ export default class CarListModel extends EventTarget {
 
   private onItemDeleted(): void {
     this.loadCars();
+  }
+
+  public startCars(): void {
+    let resolved = false;
+    const promises = this.carItems.map(
+      (carItem) => carItem.startRace().then((carRace) => {
+        if (!resolved) {
+          resolved = true;
+          this.winnerData = carRace;
+          this.onSetWinner();
+        }
+      }),
+    );
+
+    Promise.all(promises).then(() => {
+      if (!resolved) {
+        global.console.error('All cars are crashed.');
+      }
+    });
+  }
+
+  public stopCars() {
+    this.carItems.forEach((carItem) => {
+      carItem.comeBackToStart();
+    });
   }
 
   public generateCars() {
