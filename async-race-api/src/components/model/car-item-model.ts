@@ -5,6 +5,8 @@ import API from '../api/api';
 export default class CarItemModel extends EventTarget {
   private raceTimeValue: number = 0;
 
+  private isStartEngineDisabledValue: boolean = false;
+
   public constructor(private api: API, private car: Car) {
     super();
   }
@@ -23,6 +25,15 @@ export default class CarItemModel extends EventTarget {
 
   public get raceTime(): number {
     return this.raceTimeValue;
+  }
+
+  public set isStartEngineDisabled(value: boolean) {
+    this.isStartEngineDisabledValue = value;
+    this.dispatchEvent(new CustomEvent('engine-start-disabled-change'));
+  }
+
+  public get isStartEngineDisabled(): boolean {
+    return this.isStartEngineDisabledValue;
   }
 
   public delete(): void {
@@ -49,8 +60,10 @@ export default class CarItemModel extends EventTarget {
   }
 
   public comeBackToStart(): void {
-    this.dispatchEvent(new CustomEvent('come-back-to-start'));
-    // this.track.comeBackToStart();
+    this.api.startOrStopEngine(this.id, 'stopped')
+      .then(() => {
+        this.dispatchEvent(new CustomEvent('come-back-to-start'));
+      });
   }
 
   public startRace(): Promise<CarRace> {

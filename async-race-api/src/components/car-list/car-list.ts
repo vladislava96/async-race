@@ -66,7 +66,7 @@ export default class CarList {
   createVictoryMessage() {
     this.victoryMessage.classList.remove('victory-message-hide');
     this.victoryMessage.classList.add('victory-message-show');
-    this.victoryMessage.textContent = `Winner: ${this.model.winner.name} with time: ${this.model.winner.time.toFixed(2)}`;
+    this.victoryMessage.textContent = `Winner: ${this.model.winner.name} with Time: ${this.model.winner.time.toFixed(2)}`;
     document.body.append(this.victoryMessage);
     setTimeout(() => {
       this.victoryMessage.classList.remove('victory-message-show');

@@ -14,6 +14,7 @@ export default class GarageModel extends EventTarget {
     this.onCreationSubmitted = this.onCreationSubmitted.bind(this);
     this.onItemSelected = this.onItemSelected.bind(this);
     this.onPostNewWinner = this.onPostNewWinner.bind(this);
+    this.onRaceEnd = this.onRaceEnd.bind(this);
 
     this.list = new ListModel(this.api);
     this.list.addEventListener('item-selected', this.onItemSelected);
@@ -23,6 +24,7 @@ export default class GarageModel extends EventTarget {
     this.update = new CreationModel(this.api);
     this.update.addEventListener(CreationModel.SUBMITTED, this.onCreationSubmitted);
     this.list.addEventListener('car-deleted', this.onPostNewWinner);
+    this.list.addEventListener('race-end', this.onRaceEnd);
   }
 
   public startCars(): void {
@@ -43,6 +45,10 @@ export default class GarageModel extends EventTarget {
 
   private onPostNewWinner(): void {
     this.dispatchEvent(new CustomEvent('post-new-winner'));
+  }
+
+  public onRaceEnd(): void {
+    this.dispatchEvent(new CustomEvent('race-end'));
   }
 
   private onItemSelected() {

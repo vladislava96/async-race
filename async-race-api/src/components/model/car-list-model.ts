@@ -95,26 +95,34 @@ export default class CarListModel extends EventTarget {
 
   public startCars(): void {
     let resolved = false;
-    const promises = this.carItems.map(
-      (carItem) => carItem.startRace().then((carRace) => {
+    const promises = this.carItems.map((carItem) => {
+      const aCarItem = carItem;
+      aCarItem.isStartEngineDisabled = true;
+
+      return carItem.startRace().then((carRace) => {
         if (!resolved) {
           resolved = true;
           this.winnerData = carRace;
           this.onSetWinner();
         }
-      }),
-    );
+      });
+    });
 
-    Promise.all(promises).then(() => {
+    Promise.allSettled(promises).then(() => {
       if (!resolved) {
         global.console.error('All cars are crashed.');
       }
+
+      global.console.log('race-end');
+      this.dispatchEvent(new CustomEvent('race-end'));
     });
   }
 
   public stopCars() {
     this.carItems.forEach((carItem) => {
       carItem.comeBackToStart();
+      const aCarItem = carItem;
+      aCarItem.isStartEngineDisabled = false;
     });
   }
 

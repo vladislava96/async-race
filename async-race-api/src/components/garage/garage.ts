@@ -20,6 +20,8 @@ export default class Garage {
     this.onRaceButtonClick = this.onRaceButtonClick.bind(this);
     this.onResetButtonClick = this.onResetButtonClick.bind(this);
     this.onGenerateButtonClick = this.onGenerateButtonClick.bind(this);
+    this.onRaceEnd = this.onRaceEnd.bind(this);
+    this.model.addEventListener('race-end', this.onRaceEnd);
     this.initialize();
   }
 
@@ -74,6 +76,7 @@ export default class Garage {
 
     this.resetButton = document.createElement('button');
     this.resetButton.textContent = 'reset';
+    this.resetButton.disabled = true;
     this.resetButton.addEventListener('click', this.onResetButtonClick);
 
     this.generateButton = document.createElement('button');
@@ -88,6 +91,11 @@ export default class Garage {
     return controller;
   }
 
+  private onRaceEnd() {
+    this.resetButton.disabled = false;
+    this.resetButton.disabled = false;
+  }
+
   private onRaceButtonClick() {
     this.raceButton.disabled = true;
     this.model.startCars();
@@ -95,6 +103,7 @@ export default class Garage {
 
   private onResetButtonClick() {
     this.raceButton.disabled = false;
+    this.resetButton.disabled = true;
     this.model.resetCars();
   }
 

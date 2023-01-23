@@ -22,6 +22,7 @@ export default class CarItem {
     this.onEngineStarted = this.onEngineStarted.bind(this);
     this.onEngineStopped = this.onEngineStopped.bind(this);
     this.onComeBackToStart = this.onComeBackToStart.bind(this);
+    this.onEngineStartDisabledChange = this.onEngineStartDisabledChange.bind(this);
 
     this.initialize();
   }
@@ -46,10 +47,12 @@ export default class CarItem {
 
     this.startEngineButton = document.createElement('button');
     this.startEngineButton.textContent = 'A';
+    this.startEngineButton.disabled = this.model.isStartEngineDisabled;
     this.startEngineButton.addEventListener('click', this.onStartEngineButtonClick);
 
     this.stopEngineButton = document.createElement('button');
     this.stopEngineButton.textContent = 'B';
+    this.stopEngineButton.disabled = true;
     this.stopEngineButton.addEventListener('click', this.stopEngine);
     engineButtons.append(
       this.deleteCarButton,
@@ -64,14 +67,19 @@ export default class CarItem {
     this.model.addEventListener('engine-started', this.onEngineStarted);
     this.model.addEventListener('engine-stopped', this.onEngineStopped);
     this.model.addEventListener('come-back-to-start', this.onComeBackToStart);
+    this.model.addEventListener('engine-start-disabled-change', this.onEngineStartDisabledChange);
   }
 
   private onStartEngineButtonClick(): void {
     this.model.startRace();
+    this.startEngineButton.disabled = true;
+    this.stopEngineButton.disabled = false;
   }
 
   private stopEngine(): void {
     this.model.comeBackToStart();
+    this.stopEngineButton.disabled = true;
+    this.startEngineButton.disabled = false;
   }
 
   private selectCar(): void {
@@ -94,6 +102,10 @@ export default class CarItem {
     this.track.stopHere();
   }
 
+  private onEngineStartDisabledChange(): void {
+    this.startEngineButton.disabled = this.model.isStartEngineDisabled;
+  }
+
   public destroy(): void {
     this.selectCarButton.removeEventListener('click', this.selectCar);
     this.startEngineButton.removeEventListener('click', this.onStartEngineButtonClick);
@@ -101,5 +113,6 @@ export default class CarItem {
     this.model.removeEventListener('engine-started', this.onEngineStarted);
     this.model.removeEventListener('engine-stopped', this.onEngineStopped);
     this.model.removeEventListener('come-back-to-start', this.onComeBackToStart);
+    this.model.removeEventListener('engine-start-disabled-change', this.onEngineStartDisabledChange);
   }
 }

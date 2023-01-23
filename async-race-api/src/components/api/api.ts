@@ -3,6 +3,8 @@ import {
   Cars,
   CreateCar,
   CreateWinner,
+  Order,
+  Sort,
   StartedEngine,
   Status,
   Success,
@@ -20,6 +22,13 @@ export default class API {
   // eslint-disable-next-line class-methods-use-this
   public async getWinnersOnPage(page: number): Promise<Winners> {
     const response = await fetch(`${winners}?_page=${page}&_limit=10`);
+    const data = await response.json();
+    return data;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public async sortWinners(page: number, sort: Sort, order: Order): Promise<Winners> {
+    const response = await fetch(`${winners}?_page=${page}&_limit=10&_sort=${sort}&order=${order}`);
     const data = await response.json();
     return data;
   }
