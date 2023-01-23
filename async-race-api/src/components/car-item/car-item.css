@@ -4,3 +4,7 @@
   position: relative;
   width: 100%;
 }
+
+.engine-buttons {
+  margin: 10px 0;
+}

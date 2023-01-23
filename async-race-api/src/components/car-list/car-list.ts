@@ -103,10 +103,6 @@ export default class CarList {
     }
   }
 
-  toWinnersPage() {
-    this.model.stopCars();
-  }
-
   private onCarsUpdated(): void {
     this.carList.innerHTML = '';
     this.destroyCarItems();

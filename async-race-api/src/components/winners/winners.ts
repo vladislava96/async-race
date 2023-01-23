@@ -7,8 +7,20 @@ export default class Winners {
 
   private car: Car;
 
+  private buttonPrev: HTMLButtonElement;
+
+  private buttonNext: HTMLButtonElement;
+
+  private pageNumber: HTMLSpanElement;
+
+  private title: HTMLHeadingElement;
+
   constructor(private element: HTMLDivElement, private model: WinnersModel) {
     this.createTableBody = this.createTableBody.bind(this);
+    this.createWinnersInfo = this.createWinnersInfo.bind(this);
+    this.createPaginationButtons = this.createPaginationButtons.bind(this);
+    this.onButtonNext = this.onButtonNext.bind(this);
+    this.onButtonPrev = this.onButtonPrev.bind(this);
     this.model.addEventListener('create-table-data', this.createTableBody);
     this.car = new Car();
   }
@@ -16,10 +28,28 @@ export default class Winners {
   initialize() {
     this.element.className = 'winners-page';
     this.element.classList.add('winners-page-hide');
-    this.element.textContent = 'WINNERS';
 
-    this.element.appendChild(this.createTableOfWinners());
+    this.element.append(
+      this.createWinnersInfo(),
+      this.createTableOfWinners(),
+      this.createPaginationButtons(),
+    );
     document.body.appendChild(this.element);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  createWinnersInfo() {
+    const winnersInfo = document.createElement('div');
+
+    this.title = document.createElement('h2');
+    this.title.textContent = `Winners (${this.model.numberOfWinners})`;
+
+    this.pageNumber = document.createElement('span');
+    this.pageNumber.textContent = `Page №${this.model.numberPage}`;
+
+    winnersInfo.append(this.title, this.pageNumber);
+
+    return winnersInfo;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -67,6 +97,41 @@ export default class Winners {
 
       this.tableOfWinnersBody.append(row);
     });
+
+    this.title.textContent = `Winners (${this.model.numberOfWinners})`;
+    this.pageNumber.textContent = `Page №${this.model.numberPage}`;
+
+    this.buttonNext.disabled = this.model.isLastPage;
+    this.buttonPrev.disabled = this.model.isFirstPage;
+  }
+
+  createPaginationButtons() {
+    const paginationButtons = document.createElement('div');
+
+    this.buttonPrev = document.createElement('button');
+    this.buttonPrev.textContent = 'Prev';
+    this.buttonPrev.addEventListener('click', this.onButtonPrev);
+
+    this.buttonNext = document.createElement('button');
+    this.buttonNext.textContent = 'Next';
+    this.buttonNext.addEventListener('click', this.onButtonNext);
+
+    paginationButtons.append(this.buttonPrev, this.buttonNext);
+    return paginationButtons;
+  }
+
+  onButtonNext() {
+    if (!this.model.isLastPage) {
+      this.model.numberPage += 1;
+      this.pageNumber.textContent = `Page №${this.model.numberPage}`;
+    }
+  }
+
+  onButtonPrev() {
+    if (!this.model.isFirstPage) {
+      this.model.numberPage -= 1;
+      this.pageNumber.textContent = `Page №${this.model.numberPage}`;
+    }
   }
 
   destroy() {

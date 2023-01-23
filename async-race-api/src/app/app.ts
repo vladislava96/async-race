@@ -28,7 +28,6 @@ export default class App {
     this.garagePage = new Garage(this.garageElement, garageModel);
     this.winnersPage = new Winners(this.winnerElement, winnersModel);
     garageModel.addEventListener('post-new-winner', () => winnersModel.createTableData());
-    this.header.addEventListener('click-winners', () => this.garagePage.toWinnersPage());
   }
 
   async start() {

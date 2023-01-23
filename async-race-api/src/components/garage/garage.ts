@@ -29,7 +29,7 @@ export default class Garage {
     const carListElement = document.createElement('div');
     this.creationForm = new CreationForm(this.model.creation, 'Create');
     this.updateForm = new CreationForm(this.model.update, 'Update');
-    const controller = this.createController();
+    const controller = this.createControls();
     this.element.append(controller);
 
     this.carList = new CarList(carListElement, this.model.list);
@@ -61,12 +61,12 @@ export default class Garage {
     return carUpdateBlock;
   }
 
-  public createController(): HTMLDivElement {
+  public createControls(): HTMLDivElement {
     const carCreationBlock = this.creationForm.renderCreationBlock();
     const carUpdateBlock = this.updateForm.renderCreationBlock();
 
     const controller = document.createElement('div');
-    controller.className = 'controller';
+    controller.className = 'controls';
 
     this.raceButton = document.createElement('button');
     this.raceButton.textContent = 'race';
@@ -100,10 +100,6 @@ export default class Garage {
 
   private onGenerateButtonClick() {
     this.model.generateCars();
-  }
-
-  public toWinnersPage() {
-    this.carList.toWinnersPage();
   }
 
   public destroy() {

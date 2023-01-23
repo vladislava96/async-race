@@ -1,13 +1,30 @@
 .winners-page-hide {
-  display: none;
+  z-index: -20;
 }
 
 .winners-page {
-  border: solid 1px black;
-  width: 50%;
+  position: fixed;
+  top: 30px;
+  width: 100%;
+  height: calc(100vh - 30px);
+  background-color: white;
 }
 
 .table-of-winners {
-  border: 1px solid red;
-  width: 100%;
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  border: 1px solid grey;
+}
+
+.table-of-winners th {
+  border: 1px solid grey;
+  padding: 10px;
+  background-color: aquamarine;
+}
+
+.table-of-winners td {
+  text-align: center;
+  border: 1px solid grey;
+  padding: 5px;
 }

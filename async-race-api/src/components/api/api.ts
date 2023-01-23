@@ -32,6 +32,13 @@ export default class API {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  public async getWinners(): Promise<Winners> {
+    const response = await fetch(`${winners}`);
+    const data = await response.json();
+    return data;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   async getAll(url: string) {
     const response = await fetch(url);
     const data = await response.json();

@@ -34,6 +34,7 @@ export default class CarItem {
     this.track = new Track(trackElement, this.car, this.model.color);
 
     const engineButtons = document.createElement('div');
+    engineButtons.className = 'engine-buttons';
 
     this.deleteCarButton = document.createElement('button');
     this.deleteCarButton.textContent = 'delete';
@@ -55,9 +56,10 @@ export default class CarItem {
       this.selectCarButton,
       this.startEngineButton,
       this.stopEngineButton,
+      carName,
     );
 
-    this.element.append(carName, engineButtons, trackElement);
+    this.element.append(engineButtons, trackElement);
 
     this.model.addEventListener('engine-started', this.onEngineStarted);
     this.model.addEventListener('engine-stopped', this.onEngineStopped);

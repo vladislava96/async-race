@@ -1,6 +1,6 @@
 import './header.css';
 
-export default class Header extends EventTarget {
+export default class Header {
   public render() {
     const header = document.createElement('div');
     header.className = 'header';
@@ -23,7 +23,6 @@ export default class Header extends EventTarget {
       garagePage?.classList.add('garage-page-hide');
       const winnersPage = document.querySelector('.winners-page');
       winnersPage?.classList.remove('winners-page-hide');
-      this.dispatchEvent(new CustomEvent('click-winners'));
     });
 
     header.append(toGarageBtn, toWinnersBtn);

@@ -1,4 +1,5 @@
 import CreationModel from '../model/creation-model';
+import './creation-form.css';
 
 export default class CreationForm {
   textInput: HTMLInputElement;

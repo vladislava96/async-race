@@ -1,6 +1,16 @@
+.car-list {
+  margin: 10px 10px;
+  padding: 0;
+}
+
 .car-list-item {
   list-style-type: none;
-  border: 1px solid black;
+  border-bottom: 1px dashed black;
+}
+
+.car-list-item span {
+  font-size: 1.2em;
+  margin-left: 20px;
 }
 
 .victory-message-show {

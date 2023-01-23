@@ -2,4 +2,14 @@
   display: flex;
   justify-content: space-between;
   width: 200px;
+  height: 30px;
+}
+
+.to-garage-btn, .to-winners-btn {
+  display: inline-block;
+  height: 30px;
+  border: 1px solid rgb(71, 118, 102);
+  border-radius: 5px;
+  background-color: aquamarine;
+  cursor: pointer;
 }
