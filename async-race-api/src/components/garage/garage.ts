@@ -89,10 +89,12 @@ export default class Garage {
   }
 
   private onRaceButtonClick() {
+    this.raceButton.disabled = true;
     this.model.startCars();
   }
 
   private onResetButtonClick() {
+    this.raceButton.disabled = false;
     this.model.resetCars();
   }
 
