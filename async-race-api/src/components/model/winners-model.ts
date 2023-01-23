@@ -62,7 +62,6 @@ export default class WinnersModel extends EventTarget {
     const order = sortOptions[1] as Order;
     const data = await this.api.getWinnersPage(this.numberPageValue, sort, order);
 
-    global.console.log(data);
     const promises = data.map(async (winner, index) => {
       const carData = await this.api.getOne(garage, winner.id);
       const tableRowData = {
@@ -72,7 +71,7 @@ export default class WinnersModel extends EventTarget {
         wins: winner.wins,
         time: winner.time,
       };
-      global.console.log(winner.id, tableRowData);
+
       tableData.push(tableRowData);
     });
     await Promise.all(promises);

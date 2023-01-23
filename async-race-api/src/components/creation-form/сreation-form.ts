@@ -2,11 +2,11 @@ import CreationModel from '../model/creation-model';
 import './creation-form.css';
 
 export default class CreationForm {
-  textInput: HTMLInputElement;
+  private textInput: HTMLInputElement;
 
-  colorInput: HTMLInputElement;
+  private colorInput: HTMLInputElement;
 
-  carCreationForm: HTMLFormElement;
+  private carCreationForm: HTMLFormElement;
 
   public constructor(private model: CreationModel, private submitButtonCaption: string) {
     this.onModelTextChanged = this.onModelTextChanged.bind(this);
@@ -16,22 +16,22 @@ export default class CreationForm {
     this.model.addEventListener('color-changed', this.onModelColorChanged);
   }
 
-  submitForm(event: Event) {
+  private submitForm(event: Event) {
     event?.preventDefault();
     this.model.textValue = this.textInput.value;
     this.model.colorValue = this.colorInput.value;
     this.model.submit();
   }
 
-  onModelTextChanged() {
+  private onModelTextChanged() {
     this.textInput.value = this.model.textValue;
   }
 
-  onModelColorChanged() {
+  private onModelColorChanged() {
     this.colorInput.value = this.model.colorValue;
   }
 
-  renderCreationBlock() {
+  public renderCreationBlock() {
     this.carCreationForm = document.createElement('form');
     this.carCreationForm.className = 'car-creation-form';
 
@@ -59,7 +59,7 @@ export default class CreationForm {
     return this.carCreationForm;
   }
 
-  destroy() {
+  public destroy() {
     this.model.removeEventListener('text-changed', this.onModelTextChanged);
     this.model.removeEventListener('color-changed', this.onModelColorChanged);
     this.carCreationForm.removeEventListener('submit', this.submitForm);

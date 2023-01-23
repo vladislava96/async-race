@@ -2,7 +2,7 @@ import './car.css';
 
 export default class Car {
   // eslint-disable-next-line class-methods-use-this
-  createCar(color: string) {
+  public createCar(color: string) {
     const newCar = document.createElement('div');
     newCar.className = 'new-car';
     newCar.innerHTML = `<svg width="93" height="33" viewBox="0 0 93 33" fill="none" xmlns="http://www.w3.org/2000/svg">

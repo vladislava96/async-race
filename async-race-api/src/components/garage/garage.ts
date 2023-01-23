@@ -16,59 +16,33 @@ export default class Garage {
 
   private generateButton: HTMLButtonElement;
 
-  public constructor(private element: HTMLElement, private model: GarageModel) {
+  public constructor(private element: HTMLDivElement, private model: GarageModel) {
     this.onRaceButtonClick = this.onRaceButtonClick.bind(this);
     this.onResetButtonClick = this.onResetButtonClick.bind(this);
     this.onGenerateButtonClick = this.onGenerateButtonClick.bind(this);
     this.onRaceEnd = this.onRaceEnd.bind(this);
+
     this.model.addEventListener('race-end', this.onRaceEnd);
     this.initialize();
   }
 
   public initialize() {
     this.element.className = 'garage-page';
-
     const carListElement = document.createElement('div');
+
     this.creationForm = new CreationForm(this.model.creation, 'Create');
     this.updateForm = new CreationForm(this.model.update, 'Update');
-    const controller = this.createControls();
-    this.element.append(controller);
-
     this.carList = new CarList(carListElement, this.model.list);
-    this.element.appendChild(carListElement);
-  }
 
-  // eslint-disable-next-line class-methods-use-this
-  public renderUpdateBlock() {
-    const carUpdateBlock = document.createElement('div');
-    carUpdateBlock.className = 'car-update-block';
-
-    const textInput = document.createElement('input');
-    textInput.type = 'text';
-    textInput.className = 'text-input';
-    textInput.id = 'update-name';
-
-    const colorInput = document.createElement('input');
-    colorInput.type = 'color';
-    colorInput.className = 'color-input';
-    colorInput.id = 'update-color';
-
-    const updateButton = document.createElement('button');
-    updateButton.textContent = 'Update';
-    updateButton.className = 'color-button';
-    updateButton.id = 'update-button';
-
-    carUpdateBlock.append(textInput, colorInput, updateButton);
-
-    return carUpdateBlock;
+    this.element.append(this.createControls(), carListElement);
   }
 
   public createControls(): HTMLDivElement {
     const carCreationBlock = this.creationForm.renderCreationBlock();
     const carUpdateBlock = this.updateForm.renderCreationBlock();
 
-    const controller = document.createElement('div');
-    controller.className = 'controls';
+    const controls = document.createElement('div');
+    controls.className = 'controls';
 
     this.raceButton = document.createElement('button');
     this.raceButton.textContent = 'race';
@@ -83,12 +57,12 @@ export default class Garage {
     this.generateButton.textContent = 'generate cars';
     this.generateButton.addEventListener('click', this.onGenerateButtonClick);
 
-    const controllerButtons = document.createElement('div');
+    const controlsButtons = document.createElement('div');
 
-    controllerButtons.append(this.raceButton, this.resetButton, this.generateButton);
-    controller.append(carCreationBlock, carUpdateBlock, controllerButtons);
+    controlsButtons.append(this.raceButton, this.resetButton, this.generateButton);
+    controls.append(carCreationBlock, carUpdateBlock, controlsButtons);
 
-    return controller;
+    return controls;
   }
 
   private onRaceEnd() {

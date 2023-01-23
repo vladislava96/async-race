@@ -2,29 +2,19 @@ body {
   margin: 0;
 }
 
-.road {
-  border-bottom: 1px solid black;
-}
-
-.move-car-row {
-  display: flex;
-  justify-content: space-between;
+.garage-page {
+  position: fixed;
+  top: 50px;
   width: 100%;
+  height: calc(100vh - 50px);
+  overflow: auto;
+  background: white;
 }
 
 .garage-page-hide {
   z-index: -20;
 }
 
-.garage-page {
-  position: fixed;
-  top: 30px;
-  width: 100%;
-  height: calc(100vh - 30px);
-  overflow: auto;
-  background: white;
-}
-
 .controls {
-  margin-top: 10px;
+  margin: 10px;
 }

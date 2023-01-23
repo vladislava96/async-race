@@ -6,6 +6,7 @@
 .car-list-item {
   list-style-type: none;
   border-bottom: 1px dashed black;
+  padding: 10px 0 0 0;
 }
 
 .car-list-item span {
@@ -24,12 +25,21 @@
   position: absolute;
   left: calc(50% - 150px);
   top: calc(50% - 15px);
-  width: 300px;
-  height: 30px;
+  box-sizing: border-box;
+  padding: 10px;
   font-size: 1.2em;
   background-color: coral;
 }
 
 .victory-message-hide {
   display: none;
+}
+
+.garage-info {
+  margin: 10px;
+}
+
+.pagination-buttons {
+  margin: 20px 10px;
+  text-align: center;
 }

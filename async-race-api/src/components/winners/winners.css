@@ -4,9 +4,9 @@
 
 .winners-page {
   position: fixed;
-  top: 30px;
+  top: 50px;
   width: 100%;
-  height: calc(100vh - 30px);
+  height: calc(100vh - 50px);
   background-color: white;
 }
 
@@ -27,4 +27,12 @@
   text-align: center;
   border: 1px solid grey;
   padding: 5px;
+}
+
+.winners-info {
+  margin: 10px;
+}
+
+.sort-wins {
+  margin: 20px 10px 10px;
 }

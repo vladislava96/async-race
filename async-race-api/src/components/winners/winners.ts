@@ -3,8 +3,6 @@ import WinnersModel from '../model/winners-model';
 import './winners.css';
 
 export default class Winners {
-  private tableOfWinnersBody: HTMLTableSectionElement;
-
   private car: Car;
 
   private buttonPrev: HTMLButtonElement;
@@ -17,16 +15,20 @@ export default class Winners {
 
   private sortSelect: HTMLSelectElement;
 
+  private bodyTableOfWinners: HTMLTableSectionElement;
+
   constructor(private element: HTMLDivElement, private model: WinnersModel) {
-    this.createTableBody = this.createTableBody.bind(this);
     this.createWinnersInfo = this.createWinnersInfo.bind(this);
-    this.createPaginationButtons = this.createPaginationButtons.bind(this);
     this.createSortSelect = this.createSortSelect.bind(this);
+    this.createWinnersData = this.createWinnersData.bind(this);
+    this.createPaginationButtons = this.createPaginationButtons.bind(this);
     this.onButtonNext = this.onButtonNext.bind(this);
     this.onButtonPrev = this.onButtonPrev.bind(this);
     this.sortWinners = this.sortWinners.bind(this);
-    this.model.addEventListener('create-table-data', this.createTableBody);
+    this.model.addEventListener('create-table-data', this.createWinnersData);
     this.car = new Car();
+
+    this.initialize();
   }
 
   initialize() {
@@ -39,12 +41,12 @@ export default class Winners {
       this.createTableOfWinners(),
       this.createPaginationButtons(),
     );
-    document.body.appendChild(this.element);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  createWinnersInfo() {
+  private createWinnersInfo() {
     const winnersInfo = document.createElement('div');
+    winnersInfo.className = 'winners-info';
 
     this.title = document.createElement('h2');
     this.title.textContent = `Winners (${this.model.numberOfWinners})`;
@@ -58,27 +60,29 @@ export default class Winners {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  createTableOfWinners() {
+  private createTableOfWinners() {
     const tableHeaders = ['Number', 'Car', 'Name', 'Wins', 'Best time (seconds)'];
 
     const tableOfWinners = document.createElement('table');
     tableOfWinners.className = 'table-of-winners';
 
-    const tableOfWinnersRow = document.createElement('tr');
+    const rowTableOfWinners = document.createElement('tr');
 
     tableHeaders.forEach((header) => {
-      const tableOfWinnersHeader = document.createElement('th');
-      tableOfWinnersHeader.textContent = header;
-      tableOfWinnersRow.appendChild(tableOfWinnersHeader);
+      const headerTableOfWinners = document.createElement('th');
+      headerTableOfWinners.textContent = header;
+      rowTableOfWinners.appendChild(headerTableOfWinners);
     });
-    this.tableOfWinnersBody = document.createElement('tbody');
-    tableOfWinners.append(tableOfWinnersRow, this.tableOfWinnersBody);
+
+    this.bodyTableOfWinners = document.createElement('tbody');
+    tableOfWinners.append(rowTableOfWinners, this.bodyTableOfWinners);
 
     return tableOfWinners;
   }
 
-  createTableBody() {
-    this.tableOfWinnersBody.innerHTML = '';
+  private createWinnersData() {
+    this.bodyTableOfWinners.innerHTML = '';
+
     this.model.tableData.forEach((data) => {
       const row = document.createElement('tr');
 
@@ -99,7 +103,7 @@ export default class Winners {
 
       row.append(number, car, name, wins, time);
 
-      this.tableOfWinnersBody.append(row);
+      this.bodyTableOfWinners.append(row);
     });
 
     this.title.textContent = `Winners (${this.model.numberOfWinners})`;
@@ -110,25 +114,26 @@ export default class Winners {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  createSortSelect() {
+  private createSortSelect() {
     this.sortSelect = document.createElement('select');
     this.sortSelect.className = 'sort-wins';
+
     this.sortSelect.addEventListener('change', this.sortWinners);
+
     const selectOptions = ['sort:', 'id ASC', 'id DESC', 'wins ASC', 'wins DESC', 'time ASC', 'time DESC'];
+
     selectOptions.forEach((selectOption) => {
       const option = document.createElement('option');
       option.textContent = selectOption;
       this.sortSelect.appendChild(option);
     });
+
     return this.sortSelect;
   }
 
-  sortWinners() {
-    this.model.sort = this.sortSelect.value;
-  }
-
-  createPaginationButtons() {
+  private createPaginationButtons() {
     const paginationButtons = document.createElement('div');
+    paginationButtons.className = 'pagination-buttons';
 
     this.buttonPrev = document.createElement('button');
     this.buttonPrev.textContent = 'Prev';
@@ -142,22 +147,26 @@ export default class Winners {
     return paginationButtons;
   }
 
-  onButtonNext() {
+  private sortWinners() {
+    this.model.sort = this.sortSelect.value;
+  }
+
+  private onButtonNext() {
     if (!this.model.isLastPage) {
       this.model.numberPage += 1;
       this.pageNumber.textContent = `Page №${this.model.numberPage}`;
     }
   }
 
-  onButtonPrev() {
+  private onButtonPrev() {
     if (!this.model.isFirstPage) {
       this.model.numberPage -= 1;
       this.pageNumber.textContent = `Page №${this.model.numberPage}`;
     }
   }
 
-  destroy() {
-    this.tableOfWinnersBody.innerHTML = '';
+  public destroy() {
+    this.bodyTableOfWinners.innerHTML = '';
     this.element.innerHTML = '';
   }
 }

@@ -30,7 +30,7 @@ export default class CarFactory {
   constructor(private brands: Array<string>, private models: string[]) {
   }
 
-  generateCar(): CreateCar {
+  public generateCar(): CreateCar {
     const carBrandIndex = Math.floor(Math.random() * this.brands.length);
     const carModelIndex = Math.floor(Math.random() * this.models.length);
     const carName = `${this.brands[carBrandIndex]} ${this.models[carModelIndex]}`;

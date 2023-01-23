@@ -8,31 +8,36 @@ import Winners from '../components/winners/winners';
 export default class App {
   api: API;
 
-  header: Header;
+  headerElement: HTMLElement;
 
-  garageElement: HTMLElement;
+  garageElement: HTMLDivElement;
+
+  winnerElement: HTMLDivElement;
+
+  header: Header;
 
   garagePage: Garage;
 
   winnersPage: Winners;
 
-  winnerElement: HTMLDivElement;
-
   constructor() {
     this.api = new API();
-    this.header = new Header();
+
+    this.headerElement = document.createElement('header');
     this.garageElement = document.createElement('div');
     this.winnerElement = document.createElement('div');
+
     const garageModel = new GarageModel(this.api);
     const winnersModel = new WinnersModel(this.api);
+
+    this.header = new Header(this.headerElement);
     this.garagePage = new Garage(this.garageElement, garageModel);
     this.winnersPage = new Winners(this.winnerElement, winnersModel);
+
     garageModel.addEventListener('post-new-winner', () => winnersModel.createTableData());
   }
 
   async start() {
-    this.header.render();
-    document.body.appendChild(this.garageElement);
-    this.winnersPage.initialize();
+    document.body.append(this.headerElement, this.garageElement, this.winnerElement);
   }
 }

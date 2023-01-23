@@ -61,14 +61,14 @@ export default class CarListModel extends EventTarget {
     return this.winnerData;
   }
 
-  onSetWinner() {
+  private onSetWinner() {
     this.api.getOne(winners, this.winnerData.id)
       .then((winner) => {
         const updateWinner = {
           wins: winner.wins + 1,
           time: Math.min(this.winnerData.time, winner.time),
         };
-        this.api.update(winners, this.winnerData.id, updateWinner);
+        return this.api.update(winners, this.winnerData.id, updateWinner);
       })
       .catch(() => {
         const newWinner = {
@@ -76,7 +76,7 @@ export default class CarListModel extends EventTarget {
           wins: 1,
           time: this.winnerData.time,
         };
-        this.api.post(winners, newWinner);
+        return this.api.post(winners, newWinner);
       })
       .then(() => {
         this.dispatchEvent(new CustomEvent('post-new-winner'));

@@ -21,35 +21,35 @@ export default class CarList {
   private victoryMessage: HTMLDivElement;
 
   public constructor(private element: HTMLElement, private model: CarListModel) {
-    this.onCarsUpdated = this.onCarsUpdated.bind(this);
-
     this.car = new Car();
+    this.onCarsUpdated = this.onCarsUpdated.bind(this);
     this.onButtonNext = this.onButtonNext.bind(this);
     this.onButtonPrev = this.onButtonPrev.bind(this);
-    this.createVictoryMessage = this.createVictoryMessage.bind(this);
     this.createVictoryMessage = this.createVictoryMessage.bind(this);
 
     this.initialize();
   }
 
   private initialize(): void {
-    const garageInfo = this.renderGarageInfo();
     this.carList = document.createElement('ul');
     this.carList.className = 'car-list';
 
-    this.model.addEventListener('cars-updated', this.onCarsUpdated);
-
     const paginationButtons = this.createPaginationButtons();
+    const garageInfo = this.createGarageInfo();
+
     this.victoryMessage = document.createElement('div');
     this.victoryMessage.className = 'victory-message-hide';
+
     this.element.append(garageInfo, this.carList, paginationButtons);
 
+    this.model.addEventListener('cars-updated', this.onCarsUpdated);
     this.model.addEventListener('post-new-winner', this.createVictoryMessage);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  renderGarageInfo() {
+  private createGarageInfo() {
     const garageInfo = document.createElement('div');
+    garageInfo.className = 'garage-info';
 
     this.title = document.createElement('h2');
     this.title.textContent = `Garage (${this.model.numberOfCars})`;
@@ -63,11 +63,13 @@ export default class CarList {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  createVictoryMessage() {
+  private createVictoryMessage() {
     this.victoryMessage.classList.remove('victory-message-hide');
     this.victoryMessage.classList.add('victory-message-show');
+
     this.victoryMessage.textContent = `Winner: ${this.model.winner.name} with Time: ${this.model.winner.time.toFixed(2)}`;
     document.body.append(this.victoryMessage);
+
     setTimeout(() => {
       this.victoryMessage.classList.remove('victory-message-show');
       this.victoryMessage.classList.add('victory-message-hide');
@@ -75,8 +77,10 @@ export default class CarList {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  createPaginationButtons() {
+  private createPaginationButtons() {
     const paginationButtons = document.createElement('div');
+    paginationButtons.className = 'pagination-buttons';
+
     this.buttonPrev = document.createElement('button');
     this.buttonPrev.textContent = 'Prev';
     this.buttonPrev.addEventListener('click', this.onButtonPrev);
@@ -89,14 +93,14 @@ export default class CarList {
     return paginationButtons;
   }
 
-  onButtonNext() {
+  private onButtonNext() {
     if (!this.model.isLastPage) {
       this.model.numberPage += 1;
       this.pageNumber.textContent = `Page №${this.model.numberPage}`;
     }
   }
 
-  onButtonPrev() {
+  private onButtonPrev() {
     if (!this.model.isFirstPage) {
       this.model.numberPage -= 1;
       this.pageNumber.textContent = `Page №${this.model.numberPage}`;

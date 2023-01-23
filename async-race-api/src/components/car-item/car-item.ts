@@ -22,6 +22,7 @@ export default class CarItem {
     this.onEngineStarted = this.onEngineStarted.bind(this);
     this.onEngineStopped = this.onEngineStopped.bind(this);
     this.onComeBackToStart = this.onComeBackToStart.bind(this);
+    this.createEngineButtons = this.createEngineButtons.bind(this);
     this.onEngineStartDisabledChange = this.onEngineStartDisabledChange.bind(this);
 
     this.initialize();
@@ -34,6 +35,20 @@ export default class CarItem {
     const trackElement = document.createElement('div');
     this.track = new Track(trackElement, this.car, this.model.color);
 
+    const engineButtons = this.createEngineButtons();
+
+    const engineControl = document.createElement('div');
+    engineControl.append(engineButtons, carName);
+
+    this.element.append(engineControl, trackElement);
+
+    this.model.addEventListener('engine-started', this.onEngineStarted);
+    this.model.addEventListener('engine-stopped', this.onEngineStopped);
+    this.model.addEventListener('come-back-to-start', this.onComeBackToStart);
+    this.model.addEventListener('engine-start-disabled-change', this.onEngineStartDisabledChange);
+  }
+
+  private createEngineButtons() {
     const engineButtons = document.createElement('div');
     engineButtons.className = 'engine-buttons';
 
@@ -54,20 +69,15 @@ export default class CarItem {
     this.stopEngineButton.textContent = 'B';
     this.stopEngineButton.disabled = true;
     this.stopEngineButton.addEventListener('click', this.stopEngine);
+
     engineButtons.append(
       this.deleteCarButton,
       this.selectCarButton,
       this.startEngineButton,
       this.stopEngineButton,
-      carName,
     );
 
-    this.element.append(engineButtons, trackElement);
-
-    this.model.addEventListener('engine-started', this.onEngineStarted);
-    this.model.addEventListener('engine-stopped', this.onEngineStopped);
-    this.model.addEventListener('come-back-to-start', this.onComeBackToStart);
-    this.model.addEventListener('engine-start-disabled-change', this.onEngineStartDisabledChange);
+    return engineButtons;
   }
 
   private onStartEngineButtonClick(): void {
