@@ -1,5 +1,9 @@
 import { garage } from '../../constants/constants';
-import { DataTable } from '../../types';
+import {
+  DataTable,
+  Order,
+  Sort,
+} from '../../types';
 import API from '../api/api';
 
 export default class WinnersModel extends EventTarget {
@@ -9,8 +13,15 @@ export default class WinnersModel extends EventTarget {
 
   private numberOfWinnersValue: number = 0;
 
+  private sortValue: string = 'id ASC';
+
   constructor(private api: API) {
     super();
+    this.createTableData();
+  }
+
+  public set sort(value: string) {
+    this.sortValue = value;
     this.createTableData();
   }
 
@@ -45,7 +56,12 @@ export default class WinnersModel extends EventTarget {
 
   public async createTableData() {
     const tableData: DataTable[] = [];
-    const data = await this.api.getWinnersOnPage(this.numberPageValue);
+
+    const sortOptions = this.sortValue.split(' ');
+    const sort = sortOptions[0] as Sort;
+    const order = sortOptions[1] as Order;
+    const data = await this.api.getWinnersPage(this.numberPageValue, sort, order);
+
     global.console.log(data);
     const promises = data.map(async (winner, index) => {
       const carData = await this.api.getOne(garage, winner.id);

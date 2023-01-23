@@ -15,12 +15,16 @@ export default class Winners {
 
   private title: HTMLHeadingElement;
 
+  private sortSelect: HTMLSelectElement;
+
   constructor(private element: HTMLDivElement, private model: WinnersModel) {
     this.createTableBody = this.createTableBody.bind(this);
     this.createWinnersInfo = this.createWinnersInfo.bind(this);
     this.createPaginationButtons = this.createPaginationButtons.bind(this);
+    this.createSortSelect = this.createSortSelect.bind(this);
     this.onButtonNext = this.onButtonNext.bind(this);
     this.onButtonPrev = this.onButtonPrev.bind(this);
+    this.sortWinners = this.sortWinners.bind(this);
     this.model.addEventListener('create-table-data', this.createTableBody);
     this.car = new Car();
   }
@@ -30,6 +34,7 @@ export default class Winners {
     this.element.classList.add('winners-page-hide');
 
     this.element.append(
+      this.createSortSelect(),
       this.createWinnersInfo(),
       this.createTableOfWinners(),
       this.createPaginationButtons(),
@@ -68,7 +73,6 @@ export default class Winners {
     });
     this.tableOfWinnersBody = document.createElement('tbody');
     tableOfWinners.append(tableOfWinnersRow, this.tableOfWinnersBody);
-    // const tableOfWinnersData = document.createElement('td');
 
     return tableOfWinners;
   }
@@ -103,6 +107,24 @@ export default class Winners {
 
     this.buttonNext.disabled = this.model.isLastPage;
     this.buttonPrev.disabled = this.model.isFirstPage;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  createSortSelect() {
+    this.sortSelect = document.createElement('select');
+    this.sortSelect.className = 'sort-wins';
+    this.sortSelect.addEventListener('change', this.sortWinners);
+    const selectOptions = ['sort:', 'id ASC', 'id DESC', 'wins ASC', 'wins DESC', 'time ASC', 'time DESC'];
+    selectOptions.forEach((selectOption) => {
+      const option = document.createElement('option');
+      option.textContent = selectOption;
+      this.sortSelect.appendChild(option);
+    });
+    return this.sortSelect;
+  }
+
+  sortWinners() {
+    this.model.sort = this.sortSelect.value;
   }
 
   createPaginationButtons() {
