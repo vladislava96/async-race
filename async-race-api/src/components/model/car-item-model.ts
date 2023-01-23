@@ -1,4 +1,4 @@
-import { garage } from '../../constants/constants';
+import { garage, winners } from '../../constants/constants';
 import { Car, CarRace } from '../../types';
 import API from '../api/api';
 
@@ -27,6 +27,7 @@ export default class CarItemModel extends EventTarget {
 
   public delete(): void {
     this.api.delete(garage, this.id)
+      .then(() => this.api.delete(winners, this.id))
       .then(() => {
         this.dispatchEvent(new CustomEvent('deleted'));
       });

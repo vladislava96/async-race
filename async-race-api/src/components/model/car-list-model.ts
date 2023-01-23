@@ -90,6 +90,7 @@ export default class CarListModel extends EventTarget {
 
   private onItemDeleted(): void {
     this.loadCars();
+    this.dispatchEvent(new CustomEvent('car-deleted'));
   }
 
   public startCars(): void {

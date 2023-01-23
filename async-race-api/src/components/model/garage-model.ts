@@ -22,6 +22,7 @@ export default class GarageModel extends EventTarget {
     this.creation.addEventListener(CreationModel.SUBMITTED, this.onCreationSubmitted);
     this.update = new CreationModel(this.api);
     this.update.addEventListener(CreationModel.SUBMITTED, this.onCreationSubmitted);
+    this.list.addEventListener('car-deleted', this.onPostNewWinner);
   }
 
   public startCars(): void {
