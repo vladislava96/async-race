@@ -99,13 +99,19 @@ export default class CarListModel extends EventTarget {
       const aCarItem = carItem;
       aCarItem.isStartEngineDisabled = true;
 
-      return carItem.startRace().then((carRace) => {
-        if (!resolved) {
-          resolved = true;
-          this.winnerData = carRace;
-          this.onSetWinner();
-        }
-      });
+      return carItem.startRace()
+        .then((carRace) => {
+          if (!resolved) {
+            resolved = true;
+            this.winnerData = carRace;
+            this.onSetWinner();
+          }
+        })
+        .catch((error) => {
+          if (error instanceof Error) {
+            global.console.error(error.message);
+          }
+        });
     });
 
     Promise.allSettled(promises).then(() => {

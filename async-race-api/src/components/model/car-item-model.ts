@@ -78,10 +78,6 @@ export default class CarItemModel extends EventTarget {
         this.getDriveMode()
           .then(() => carRace)
           .catch((error) => {
-            if (error instanceof Error) {
-              global.console.error(error.message);
-            }
-
             this.dispatchEvent(new CustomEvent('engine-stopped'));
 
             clearTimeout(timerId);

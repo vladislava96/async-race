@@ -81,7 +81,11 @@ export default class CarItem {
   }
 
   private onStartEngineButtonClick(): void {
-    this.model.startRace();
+    this.model.startRace().catch((error) => {
+      if (error instanceof Error) {
+        global.console.error(error.message);
+      }
+    });
     this.startEngineButton.disabled = true;
     this.stopEngineButton.disabled = false;
   }

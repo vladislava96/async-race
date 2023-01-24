@@ -50,6 +50,8 @@ export default class CreationModel extends EventTarget {
 
     if (this.id === null) {
       promise = this.api.post(garage, creationData);
+      this.colorValue = '';
+      this.textValue = '';
     } else {
       promise = this.api.update(garage, this.id, creationData);
     }
